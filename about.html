@@ -1,0 +1,180 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>About — Rahob General Enterprises</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* page-specific hero background */
+    .about-hero {
+      background: linear-gradient(135deg, rgba(255,47,160,0.06), rgba(0,0,0,0.02));
+      padding: 80px 20px;
+      text-align: center;
+    }
+    .about-hero h1 {
+     color: hotpink;
+     font-size: 2.6rem;
+     margin-bottom: 8px; 
+    }
+    .about-hero p {
+     color: #444;
+     max-width:800px;
+     margin:0 auto 18px; 
+     font-size:1.05rem;
+     }
+    .values {
+     display:flex;
+     gap:18px; 
+     justify-content:center;
+     flex-wrap:wrap;
+     margin-top:28px;
+     }
+    .value {
+     background:#fff; 
+    padding:18px;
+    border-radius:12px; 
+    box-shadow:0 8px 30px rgba(16,16,24,0.04);
+    min-width:220px;
+    max-width:280px; 
+    text-align:left;
+   }
+    .value h4{ 
+    margin:0 0 8px 0; 
+    color:hotpink
+    }
+    .team-grid {
+     display:grid; 
+     grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:18px; 
+     margin-top:20px;
+     }
+    .member {
+     background:#fff;
+     padding:12px; 
+     border-radius:12px; 
+     text-align:center; 
+     box-shadow:0 8px 24px rgba(0,0,0,0.04)
+     }
+    .member img{
+     width:100%;
+     height:180px;
+     object-fit:cover; 
+     border-radius:8px; }
+    .testimonials {
+     margin-top:28px; 
+    display:flex; 
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap; 
+  }
+    .test {
+    background:#fff; 
+    padding:14px;
+   border-radius:12px; 
+   box-shadow:0 6px 20px rgba(0,0,0,0.04);
+   max-width:360px }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Rahob General Enterprises</div>
+    <!-- Mobile nav toggle (keeps same id as index/product) -->
+    <button id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false">
+      <svg class="icon icon--open" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+      </svg>
+      <svg class="icon icon--close" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+        <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+      </svg>
+    </button>
+    <nav id="main-nav">
+      <a href="index.html">Home</a>
+      <a href="product.html">Products</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="about-hero">
+      <h1>We weigh what matters.</h1>
+      <p>Rahob General Enterprises brings precise, reliable scales to homes and businesses. We pair engineered accuracy with friendly local support because a measurement is only as good as the hands that use it.</p>
+
+      <div class="values" aria-hidden="false">
+        <div class="value">
+          <h4>Precision First</h4>
+          <p>Every scale is tested and calibrated before shipping. Accuracy isn't a feature, it's the standard.</p>
+        </div>
+        <div class="value">
+          <h4>Local Support</h4>
+          <p>Repairs, spare parts, and a human you can call. No “sorry, try again later” automated nonsense.</p>
+        </div>
+        <div class="value">
+          <h4>Fair Pricing</h4>
+          <p>Clear prices, transparent warranties, and honest trade. No hidden fees.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <h2 style="color:hotpink">How we work</h2>
+      <p class="muted">Simple, and effective, here's our process.</p>
+
+      <div class="values" style="margin-top:18px;">
+        <div class="value"><h4>1. Pick</h4><p>Choose a scale that fits your use-case be it kitchen, retail, industrial.</p></div>
+        <div class="value"><h4>2. Calibrate</h4><p>We pre-calibrate units and include a quick-start guide for best results.</p></div>
+        <div class="value"><h4>3. Support</h4><p>Lifetime advice via chat/phone + 2-year warranty on most models.</p></div>
+      </div>
+
+      <h2 style="margin-top:36px; color:hotpink">Meet the team</h2>
+      <div class="team-grid">
+        <div class="member">
+          <img src="assets/team-1.jpg" alt="Team member">
+          <h4>Rahanat — Founder</h4>
+          <p class="muted">Logistics queen.</p>
+        </div>
+  
+        <div class="member">
+          <img src="assets/team-2.jpg" alt="Team member">
+          <h4>Kingsley — Technician</h4>
+          <p class="muted">If it beeps, he fixes it.</p>
+        </div>
+        <div class="member">
+          <img src="assets/team-3.jpg" alt="Team member">
+          <h4>Nora — Customer Care</h4>
+          <p class="muted">Answers questions with accuracy and kindness.</p>
+        </div>
+      </div>
+
+      <h2 style="margin-top:36px; color:hotpink">What customers say</h2>
+      <div class="testimonials">
+        <div class="test">“Fast delivery and the scale is seriously accurate. Saved my small shop hours.” — Emeka</div>
+        <div class="test">“The technician came the next day and recalibrated our platform. 10/10.” — Chika</div>
+      </div>
+
+      <div style="text-align:center; margin:40px 0;">
+        <a href="product.html" class="btn btn-primary">Shop Catalog</a>
+        <a href="contact.html" class="btn btn-outline" style="margin-left:12px;">Get a Quote</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>© 2025 Rahob General Enterprises</p>
+    </div>
+  </footer>
+</body>
+<script>
+  // Use the same nav-toggle behavior as other pages: toggle body.nav-open
+  (function(){
+    const toggle = document.getElementById('nav-toggle');
+    if (!toggle) return;
+    toggle.addEventListener('click', () => {
+      const isOpen = document.body.classList.toggle('nav-open');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  })();
+</script>
+</html>

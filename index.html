@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rahob — ScalePro • Precision You Can Trust</title>
+  <meta name="description" content="Trusted weighing scales — precise, durable, backed by service & warranty. Shop ScalePro at Rahob General Enterprises." />
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="logo">Rahob General Enterprises</div>
+  <button id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false">
+    <!-- hamburger -->
+    <svg class="icon icon--open" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+    </svg>
+    <!-- close -->
+    <svg class="icon icon--close" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+      <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+    </svg>
+  </button>
+  <nav id="main-nav">
+    <a href="#">Home</a>
+    <a href="product.html">Products</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-text">
+    <h1>ScalePro</h1>
+        <p class="tagline">Precision you can trust — industrial & retail weighing solutions with warranty and local support.</p>
+        <div class="hero-ctas">
+          <a href="product.html" class="btn btn-primary">Shop Catalog</a>
+          <a href="#contact" class="btn btn-outline">Get a Quote</a>
+        </div>
+        <ul class="features">
+          <li>±0.01g fine accuracy</li>
+          <li>2-year warranty & local servicing</li>
+          <li>Fast nationwide delivery</li>
+        </ul>
+      </div>
+
+      <div class="hero-gallery" aria-live="polite">
+        <img id="big-img" src="" alt="Scale image" loading="lazy" />
+        <div id="scale-desc" class="scale-desc" aria-hidden="false"></div>
+
+        <div id="thumbs" class="thumbs" role="list">
+          <!-- thumbs injected here -->
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="wrap about">
+      <h2>Why choose Rahob</h2>
+      <p>We combine precision engineering with on-the-ground support — local parts, quick repairs, and clear pricing.</p>
+      <!-- short testimonials / trust badges -->
+    </section>
+
+    <!-- Footer CTA -->
+    <section class="wrap small-cta">
+      <p>Need help picking the right scale? <a href="#contact">Talk to our team</a>.</p>
+    </section>
+  </main>
+
+  <footer id="contact" class="site-footer">
+    <div class="wrap footer-inner">
+      <div>
+        <strong>Rahob General Enterprises</strong>
+        <p>© 2025 — All rights reserved</p>
+      </div>
+      <div>
+        <p>Follow: <a href="#">Facebook</a> • <a href="#">Instagram</a></p>
+      </div>
+    </div>
+</section>
+
+
+ <script>
+   // Nav toggle: toggles body.nav-open and updates aria attributes
+    (function(){
+      const toggle = document.getElementById('nav-toggle');
+      if (!toggle) return;
+      toggle.addEventListener('click', () => {
+        const isOpen = document.body.classList.toggle('nav-open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    })();
+
+
+   const bigImage = document.getElementById('big-img');
+   const thumbs = document.getElementById('thumbs');
+   const desc = document.getElementById('scale-desc');
+
+     fetch('scales.json')
+    .then(res => res.json())
+    .then(data => {
+      data.forEach((scale, index) => {
+        const img = document.createElement('img');
+        img.src = scale.image;
+        img.alt = scale.name;
+        img.onclick = () => {
+          bigImage.src = scale.image;
+          desc.innerText = scale.name + ": " + scale.description;
+
+          // Remove active class from all thumbnails
+          document.querySelectorAll('#thumbs img').forEach(img => img.classList.remove('active'));
+        img.classList.add('active');
+        };
+        
+        
+        thumbs.appendChild(img);
+        
+
+        if (index === 0) {
+          bigImage.src = scale.image;
+          desc.innerText = scale.name + ": " + scale.description;
+        }
+      });
+    })
+    .catch(error => {
+      console.error("Couldn't load ", error);
+    });
+
+      
+ </script>
+</body>
+</html>

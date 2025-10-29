@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rahob Products</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Rahob General Enterprises</div>
+        <button id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false">
+          <svg class="icon icon--open" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+            <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+          </svg>
+          <svg class="icon icon--close" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+            <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </button>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="#">Products</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
+    <main class="wrap">
+    <div>
+      <h1>Products</h1>
+      <div id="productsGrid" class="products-grid"></div>
+    </div>
+
+    <div id="cartPanel" class="cart-panel">
+      <h3>Your Cart (<span id="cartCount">0</span>)</h3>
+      <div id="cartItems"></div>
+      <button id="checkoutBtn" class="btn btn-primary">Checkout</button>
+    </div>
+  </main>
+
+  <!-- Floating cart button -->
+  <button id="floatingCartBtn" aria-label="Open cart" class="floating-cart" title="Open cart">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M3 3h2l.4 2M7 13h10l3-8H6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="10" cy="20" r="1" fill="currentColor"></circle>
+      <circle cx="18" cy="20" r="1" fill="currentColor"></circle>
+    </svg>
+    <span id="floatingCount" class="cart-badge">0</span>
+  </button>
+
+  <!-- Slide-out cart panel -->
+  <aside id="slideCartPanel" class="slide-cart" aria-hidden="true">
+    <header class="slide-header">
+      <h3>Your Cart</h3>
+      <button id="closeSlide" aria-label="Close cart" class="close-slide">&times;</button>
+    </header>
+    <div id="slideCartItems" class="slide-items"></div>
+
+    <div class="slide-footer">
+      <div class="subtotal">
+        <span>Subtotal</span>
+        <strong id="slideSubtotal">₦0</strong>
+      </div>
+      <button id="slideCheckout" class="btn btn-primary">Checkout</button>
+    </div>
+  </aside>
+
+  <!-- overlay when slide open -->
+  <div id="cartOverlay" class="cart-overlay" hidden></div>
+
+<script>
+    // nav toggle for mobile (shared with other pages)
+    (function(){
+      const toggle = document.getElementById('nav-toggle');
+      if (!toggle) return;
+      toggle.addEventListener('click', () => {
+        const isOpen = document.body.classList.toggle('nav-open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    })();
+
+/* -------------------------
+   PRODUCT + CART logic
+   ------------------------- */
+
+/* fallback data (used when scales.json is missing) */
+const fallback = [
+  {"id":"s1","name":"5kg Kitchen Scale","image":"assets/5kg-kitchen-scale.jpg","description":"A compact and precise kitchen scale for accurate measurements.","price":4500},
+  {"id":"s2","name":"1ton Platform Scale","image":"assets/1ton-platform-scale.jpg","description":"A heavy-duty platform scale with a capacity of 1 ton, suitable for industrial use.","price":120000},
+  {"id":"s3","name":"300kg Original Camry Scale","image":"assets/300kg-camry-scale.jpg","description":"A robust Camry scale with a capacity of 300kg, known for its reliability.","price":55000},
+  {"id":"s4","name":"20kg Spring Dial Scale","image":"assets/20kg-spring-dial-scale.jpg","description":"A traditional spring dial scale with a capacity of 20kg, perfect for home use.","price":8500},
+  {"id":"s5","name":"200kg Digital Table Scale","image":"assets/200kg-digital-table-scale.jpg","description":"A digital table scale with a capacity of 200kg, ideal for commercial settings.","price":35000}
+];
+
+const PRODUCTS_PATH = 'scales.json';
+
+// DOM hooks
+const grid = document.getElementById('productsGrid');
+const cartPanel = document.getElementById('cartPanel');
+const cartCountEl = document.getElementById('cartCount');
+const cartItemsEl = document.getElementById('cartItems');
+
+const floatingBtn = document.getElementById('floatingCartBtn');
+const floatingCount = document.getElementById('floatingCount');
+const slidePanel = document.getElementById('slideCartPanel');
+const slideItems = document.getElementById('slideCartItems');
+const slideSubtotal = document.getElementById('slideSubtotal');
+const slideCheckout = document.getElementById('slideCheckout');
+const closeSlideBtn = document.getElementById('closeSlide');
+const overlay = document.getElementById('cartOverlay');
+
+// ------- product rendering -------
+function loadProducts(data){
+  grid.innerHTML = '';
+  data.forEach(p=>{
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.name}" loading="lazy">
+      <h4>${p.name}</h4>
+      <p class="muted">${p.description}</p>
+      <div class="price">₦${Number(p.price).toLocaleString()}</div>
+      <div class="actions">
+        <input type="number" min="1" value="1" class="qty" aria-label="Quantity for ${p.name}">
+        <button class="btn add">Add</button>
+      </div>
+    `;
+    const addBtn = card.querySelector('.add');
+    addBtn.addEventListener('click', ()=>{
+      const qty = Number(card.querySelector('.qty').value || 1);
+      addToCart({...p, qty});
+      addBtn.textContent = 'Added ✓';
+      setTimeout(()=> addBtn.textContent = 'Add', 900);
+    });
+    grid.appendChild(card);
+  });
+}
+
+// ------- cart storage helpers -------
+function getCart(){ return JSON.parse(localStorage.getItem('cart') || '[]'); }
+function saveCart(c){ localStorage.setItem('cart', JSON.stringify(c)); updateCartUI(); updateSlideUI(); }
+function addToCart(item){
+  const cart = getCart();
+  const existing = cart.find(i => i.id === item.id);
+  if(existing) existing.qty += item.qty;
+  else cart.push({ id: item.id, name: item.name, price: item.price, image: item.image, qty: item.qty });
+  saveCart(cart);
+}
+
+// ------- update right-column cart (simple view) -------
+function updateCartUI(){
+  const cart = getCart();
+  cartCountEl.textContent = cart.reduce((s,i)=>s+i.qty, 0);
+  cartItemsEl.innerHTML = cart.length ? cart.map(i=>`<div>${i.name} x${i.qty} — ₦${(i.price*i.qty).toLocaleString()}</div>`).join('') : '<p class="muted">Cart is empty</p>';
+  floatingCount && (floatingCount.textContent = cart.reduce((s,i)=>s+i.qty, 0));
+}
+
+// ------- slide-out cart UI with controls -------
+function updateSlideUI(){
+  const cart = getCart();
+  slideItems.innerHTML = '';
+
+  if(cart.length === 0){
+    slideItems.innerHTML = '<div class="empty muted">Your cart is empty</div>';
+    slideSubtotal.textContent = '₦0';
+    return;
+  }
+
+  cart.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'slide-row';
+    row.innerHTML = `
+      <img src="${item.image}" alt="${item.name}">
+      <div class="meta">
+        <div class="name">${item.name}</div>
+        <div class="price">₦${(item.price * item.qty).toLocaleString()}</div>
+        <div class="muted">₦${item.price.toLocaleString()} each</div>
+      </div>
+      <div class="row-controls">
+        <button class="small-btn dec" data-id="${item.id}" aria-label="Decrease quantity">−</button>
+        <div class="qty-display">${item.qty}</div>
+        <button class="small-btn inc" data-id="${item.id}" aria-label="Increase quantity">+</button>
+        <button class="small-btn remove" data-id="${item.id}" aria-label="Remove item">✕</button>
+      </div>
+    `;
+    slideItems.appendChild(row);
+  });
+
+  // subtotal
+  const subtotal = cart.reduce((s,i)=> s + i.price * i.qty, 0);
+  slideSubtotal.textContent = '₦' + subtotal.toLocaleString();
+}
+
+// ------- slide panel open/close handlers -------
+function openSlide(){
+  slidePanel.classList.add('open');
+  slidePanel.setAttribute('aria-hidden','false');
+  overlay.hidden = false;
+  overlay.classList.add('show');
+}
+function closeSlide(){
+  slidePanel.classList.remove('open');
+  slidePanel.setAttribute('aria-hidden','true');
+  overlay.classList.remove('show');
+  setTimeout(()=> overlay.hidden = true, 240);
+}
+
+// click floating button
+floatingBtn && floatingBtn.addEventListener('click', openSlide);
+closeSlideBtn && closeSlideBtn.addEventListener('click', closeSlide);
+overlay && overlay.addEventListener('click', closeSlide);
+
+// delegate buttons inside slide panel (inc/dec/remove)
+slideItems && slideItems.addEventListener('click', (e)=>{
+  const id = e.target.getAttribute('data-id');
+  if(e.target.classList.contains('inc')){
+    const cart = getCart();
+    const found = cart.find(i => i.id === id);
+    if(found){ found.qty += 1; saveCart(cart); }
+  } else if(e.target.classList.contains('dec')){
+    const cart = getCart();
+    const found = cart.find(i => i.id === id);
+    if(found){
+      found.qty = Math.max(1, found.qty - 1);
+      saveCart(cart);
+    }
+  } else if(e.target.classList.contains('remove')){
+    let cart = getCart();
+    cart = cart.filter(i => i.id !== id);
+    saveCart(cart);
+  }
+});
+
+// Checkout from slide
+slideCheckout && slideCheckout.addEventListener('click', ()=>{
+  const cart = getCart();
+  if(!cart.length) return alert('Cart is empty');
+  alert('Checkout stub — implement payment or order endpoint next.');
+  localStorage.removeItem('cart');
+  updateCartUI();
+  updateSlideUI();
+  closeSlide();
+});
+
+// right-panel checkout (existing)
+const checkoutBtn = document.getElementById('checkoutBtn');
+checkoutBtn && checkoutBtn.addEventListener('click', ()=>{
+  const cart = getCart();
+  if(!cart.length) return alert('Cart is empty');
+  alert('Checkout stub — implement payment or order endpoint next.');
+  localStorage.removeItem('cart');
+  updateCartUI();
+  updateSlideUI();
+});
+
+// ------- init: load products -------
+fetch(PRODUCTS_PATH)
+  .then(r => r.ok ? r.json() : Promise.reject())
+  .then(data => { if(Array.isArray(data) && data.length) loadProducts(data); else loadProducts(fallback); })
+  .catch(err => { console.warn('products load failed, using fallback', err); loadProducts(fallback); })
+  .finally(()=>{
+    updateCartUI();
+    updateSlideUI();
+  });
+
+</script>
+</main>
+</body>
+</html>

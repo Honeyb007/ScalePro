@@ -1,0 +1,38 @@
+[
+    {"id": "s1",
+    "name": "5kg Kitchen Scale",
+    "image": "./assets/5kg b kitchen scale.jpg",
+    "description": "A compact and precise kitchen scale for accurate measurements.",
+     "price": 45000
+
+    },
+    {    "id": "s2",
+        "name": "1ton Platform Scale",
+        "image": "./assets/1ton platform scale.jpg",
+        "description": " A heavy-duty platform scale with a capacity of 1 ton, suitable for industrial use.",
+         "price": 45000
+
+    },
+    {    "id": "s3",
+        "name": "300kg Original Camry Scale",
+        "image": "assets/300kg original camry scale.jpg",
+        "description": " A robust Camry scale with a capacity of 300kg, known for its reliability.",
+        "price": 45000
+    },
+    {    "id": "s4",
+        "name": "20kg Spring Dial Scale",
+        "image": "assets/20kg spring dial scale.jpg",
+        "description": " A traditional spring dial scale with a capacity of 20kg, perfect for home use.",
+        "price": 45000
+
+    },
+    {
+        "id": "s5",
+        "name": "200kg Digital Table Scale",
+        "image": "assets/200kg digital table scale.jpg",
+        "description": " A digital table scale with a capacity of 200kg, ideal for commercial settings.",
+        "price": 45000
+
+    }
+    
+]
